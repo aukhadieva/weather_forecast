@@ -9,21 +9,24 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import os
 
+from dotenv import load_dotenv
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*96712&^bg8syi%wq!cw(tuf34u@y4m3%3#dyl7@4+d^*^2-e8'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', False) == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -75,8 +78,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT')
     }
 }
 
@@ -103,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -116,8 +123,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIR = (BASE_DIR / 'static',)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Users
+
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/users/'
+
+# Email host
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', False) == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+# Local host
+
+DOMAIN_NAME = 'https://localhost:8000'
