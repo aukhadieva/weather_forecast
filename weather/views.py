@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView
@@ -22,17 +23,21 @@ class MainTemplateView(TitleMixin, LoginRequiredMixin, TemplateView):
         """
         Обрабатывает запрос погоды.
         """
-        if self.request.method == 'POST':
-            location = self.request.POST.get('location')
-            response = get_weather(location)
+        try:
+            if self.request.method == 'POST':
+                location = self.request.POST.get('location')
+                response = get_weather(location)
 
-            instance = Weather.objects.create(location=location, temperature=response[1], datetime=response[0],
-                                              user=self.request.user)
-            instance.save()
+                instance = Weather.objects.create(location=location, temperature=response[1], datetime=response[0],
+                                                  user=self.request.user)
+                instance.save()
 
-            return HttpResponseRedirect(reverse('weather:current_weather', args=[instance.pk]))
+                return HttpResponseRedirect(reverse('weather:current_weather', args=[instance.pk]))
 
-        return render(self.request, self.template_name)
+            return render(self.request, self.template_name)
+
+        except Exception:
+            return HttpResponseNotFound('<h1>Not found...</h1>')
 
     def get_context_data(self, **kwargs):
         """
