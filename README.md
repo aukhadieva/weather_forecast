@@ -57,6 +57,7 @@ Web-приложение для получения прогноза погоды
    http://localhost:8000/redoc/
    ```
 или
+
 2. Swagger
    ```sh
    http://localhost:8000/swagger/
