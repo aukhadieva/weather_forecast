@@ -1,0 +1,40 @@
+{% extends 'users/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                {% if form.errors %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert"
+                     style="margin-top: 50px;">
+                    {{ form.errors }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-body">
+                    <h1 class="h3 mb-3 fw-normal">Регистрация</h1>
+                    <hr>
+                    <form action="{% url 'users:register' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="form-group mt-4 mb-0">
+                            <input class="btn btn-dark btn-block" type="submit" value="Создать аккаунт">
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                        <div><a class="text-body-secondary small" href="{% url 'users:login' %}">
+                            Уже есть аккаунт? Авторизоваться</a></div>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

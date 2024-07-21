@@ -1,0 +1,56 @@
+{% extends 'users/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                {% if messages or form.non_field_errors %}
+                <div class="alert
+                        {% if messages%} alert-success
+                            {% else %} alert-warning
+                        {% endif %}
+                         alert-dismissible fade show" role="alert"
+                     style="margin-top: 50px;">
+                    {% if messages %}
+                    {% for message in messages %}
+                    {{ message }}
+                    {% endfor %}
+                    {% else %}
+                    {{ form.non_field_errors }}
+                    {% endif %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <div class="card-body">
+                <form method="post">
+                    <h1 class="h3 mb-3 fw-normal">Вход в систему</h1>
+                    <hr>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="small">
+                    </div>
+                    <div class="form-check text-start my-3">
+                        <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Запомнить меня
+                        </label>
+                    </div>
+                    <button class="btn btn-dark w-100 py-2" type="submit">Войти</button>
+                    <hr>
+                    <div class="text-center">
+                        <div><a class="text-body-secondary small" href="{% url 'users:register' %}">
+                            Нужен аккаунт?
+                            Зарегистрируйся!</a></div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
