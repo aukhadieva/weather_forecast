@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -18,10 +18,6 @@ class MainTemplateView(TitleMixin, LoginRequiredMixin, TemplateView):
     title = 'Главная'
     template_name = 'weather/weather_search.html'
 
-    def get_success_url(self):
-        weather = self.get_object()
-        return reverse('weather:weather_detail', args=[weather.pk])
-
     def post(self, request):
         """
         Обрабатывает запрос погоды.
@@ -34,6 +30,8 @@ class MainTemplateView(TitleMixin, LoginRequiredMixin, TemplateView):
                                               user=self.request.user)
             instance.save()
 
+            return HttpResponseRedirect(reverse('weather:current_weather', args=[instance.pk]))
+
         return render(self.request, self.template_name)
 
     def get_context_data(self, **kwargs):
@@ -41,8 +39,7 @@ class MainTemplateView(TitleMixin, LoginRequiredMixin, TemplateView):
         Возвращает данные контекста для отображения погоды.
         """
         context = super().get_context_data(**kwargs)
-        context['current_weather'] = Weather.objects.filter(user=self.request.user).last()
-        # context['last_weather'] = Weather.objects.filter(user=self.request.user).order_by('datetime')[:1]
+        context['last_location'] = Weather.objects.filter(user=self.request.user).last()
         return context
 
 
@@ -51,7 +48,7 @@ class WeatherDetailView(LoginRequiredMixin, DetailView):
     Выводит подробную информацию о погоде.
     """
     model = Weather
-    template_name = 'weather/weather_search.html'
+    template_name = 'weather/current_weather.html'
 
 
 class WeatherListAPIView(generics.ListAPIView):
