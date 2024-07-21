@@ -92,4 +92,3 @@ class UserTestCase(TestCase):
         data = {'email': self.data['email'], 'password': self.data['password1']}
         response = self.client.post(reverse('users:login'), data)
         self.assertEqual(response.status_code, HTTPStatus.OK)
-
