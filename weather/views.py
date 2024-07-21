@@ -15,7 +15,7 @@ from weather.services import get_weather
 
 
 class MainTemplateView(TitleMixin, LoginRequiredMixin, TemplateView):
-    title = 'Главная'
+    title = 'Погода'
     template_name = 'weather/weather_search.html'
 
     def post(self, request):
@@ -43,13 +43,18 @@ class MainTemplateView(TitleMixin, LoginRequiredMixin, TemplateView):
         return context
 
 
-class WeatherDetailView(LoginRequiredMixin, DetailView):
+class WeatherDetailView(TitleMixin, LoginRequiredMixin, DetailView):
     """
     Выводит подробную информацию о погоде.
     """
     model = Weather
     template_name = 'weather/current_weather.html'
 
+    def get_title(self):
+        """
+        Возвращает заголовок страницы с именем города.
+        """
+        return self.object.location
 
 class WeatherListAPIView(generics.ListAPIView):
     """
