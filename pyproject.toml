@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "weather-forecast"
+version = "0.1.0"
+description = ""
+authors = ["Olga Aukhadieva <olya.aukhadieva@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.0.7"
+ipython = "^8.26.0"
+psycopg2 = "^2.9.9"
+binary = "^1.0.0"
+python-dotenv = "^1.0.1"
+openmeteo-requests = "^1.2.0"
+requests-cache = "^1.2.1"
+pandas = "^2.2.2"
+retry-requests = "^2.0.0"
+geopy = "^2.4.1"
+djangorestframework = "^3.15.2"
+djangorestframework-simplejwt = "^5.3.1"
+coverage = "^7.6.0"
+flake8 = "^7.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

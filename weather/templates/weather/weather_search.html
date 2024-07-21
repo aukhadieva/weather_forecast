@@ -1,0 +1,63 @@
+{% extends 'weather/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block search %}
+<div class="mx-auto mb-3 " style="max-width: 600px;">
+    <div class="container mb-5">
+        <div class="row">
+            <h3>Самая актуальная погода на {% now mY%}!</h3>
+            <hr>
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Введите название города" name="location">
+                    <button type="submit" class="btn btn-primary">Поиск</button>
+                </div>
+
+<!--                {% if current_weather %}-->
+<!--                <div class="mx-auto mb-3 mt-3" style="max-width: 600px;">-->
+<!--                <div class="alert alert-primary">-->
+<!--                <div class="col-9">-->
+<!--                    <b>Дата:</b> {{ current_weather.datetime.date }}<br>-->
+<!--                    <b>Город:</b> {{ current_weather.location }}<br>-->
+<!--                    <b>Температура:</b> {{ current_weather.temperature }}<sup>o</sup><br>-->
+<!--                </div>-->
+<!--                </div>-->
+<!--                </div>-->
+<!--                {% endif %}-->
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block weather_detail %}
+{% if object %}
+<div class="mx-auto mb-3 " style="max-width: 600px;">
+<div class="alert alert-primary">
+<div class="col-9">
+    <b>Дата:</b> {{ object.datetime.date }}<br>
+    <b>Город:</b> {{ object.location }}<br>
+    <b>Температура:</b> {{ object.temperature }}<sup>o</sup><br>
+</div>
+</div>
+</div>
+{% endif %}
+{% endblock %}
+
+<div class="alert alert-primary">
+<div class="col-9">
+    <b>Дата:</b> {{ current_weather.datetime.date }}<br>
+    <b>Город:</b> {{ current_weather.location }}<br>
+    <b>Температура:</b> {{ current_weather.temperature }}<sup>o</sup><br>
+</div>
+</div>
+
+
+<hr>
+{% for location in last_weather %}
+<div><a class="text-body-secondary small" href="{% url 'weather:last_location' location.pk %}">
+Посмотреть погоду в городе: {{ location.location }} </a>
+</div>
+{% endfor %}
