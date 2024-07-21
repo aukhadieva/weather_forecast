@@ -56,6 +56,7 @@ class WeatherDetailView(TitleMixin, LoginRequiredMixin, DetailView):
         """
         return self.object.location
 
+
 class WeatherListAPIView(generics.ListAPIView):
     """
     Эндпоинт модели Weather на получение списка погоды всех пользователей.
