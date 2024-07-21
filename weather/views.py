@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -60,6 +61,8 @@ class WeatherListAPIView(generics.ListAPIView):
     serializer_class = WeatherSerializer
     queryset = Weather.objects.all()
     pagination_class = WeatherPaginator
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ('location',)
 
 
 class WeatherRetrieveAPIView(generics.RetrieveAPIView):
