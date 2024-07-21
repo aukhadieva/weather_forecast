@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.http import HttpResponseNotFound
+from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,43 +16,50 @@ from weather.services import get_weather
 
 
 class MainTemplateView(TitleMixin, LoginRequiredMixin, TemplateView):
-    title = 'Главная'
+    title = 'Погода'
     template_name = 'weather/weather_search.html'
-
-    def get_success_url(self):
-        weather = self.get_object()
-        return reverse('weather:weather_detail', args=[weather.pk])
 
     def post(self, request):
         """
         Обрабатывает запрос погоды.
         """
-        if self.request.method == 'POST':
-            location = self.request.POST.get('location')
-            response = get_weather(location)
+        try:
+            if self.request.method == 'POST':
+                location = self.request.POST.get('location')
+                response = get_weather(location)
 
-            instance = Weather.objects.create(location=location, temperature=response[1], datetime=response[0],
-                                              user=self.request.user)
-            instance.save()
+                instance = Weather.objects.create(location=location, temperature=response[1], datetime=response[0],
+                                                  user=self.request.user)
+                instance.save()
 
-        return render(self.request, self.template_name)
+                return HttpResponseRedirect(reverse('weather:current_weather', args=[instance.pk]))
+
+            return render(self.request, self.template_name)
+
+        except Exception:
+            return HttpResponseNotFound('<h1>Not found...</h1>')
 
     def get_context_data(self, **kwargs):
         """
         Возвращает данные контекста для отображения погоды.
         """
         context = super().get_context_data(**kwargs)
-        context['current_weather'] = Weather.objects.filter(user=self.request.user).last()
-        # context['last_weather'] = Weather.objects.filter(user=self.request.user).order_by('datetime')[:1]
+        context['last_location'] = Weather.objects.filter(user=self.request.user).last()
         return context
 
 
-class WeatherDetailView(LoginRequiredMixin, DetailView):
+class WeatherDetailView(TitleMixin, LoginRequiredMixin, DetailView):
     """
     Выводит подробную информацию о погоде.
     """
     model = Weather
-    template_name = 'weather/weather_search.html'
+    template_name = 'weather/current_weather.html'
+
+    def get_title(self):
+        """
+        Возвращает заголовок страницы с именем города.
+        """
+        return self.object.location
 
 
 class WeatherListAPIView(generics.ListAPIView):

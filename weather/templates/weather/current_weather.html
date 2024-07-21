@@ -1,0 +1,19 @@
+{% extends 'weather/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block weather_detail %}
+{% if object %}
+<div class="mx-auto mb-3 " style="max-width: 600px;">
+    <div class="alert alert-primary mb-1">
+        <div class="col-9">
+            <b>Дата:</b> {{ object.datetime.date }}<br>
+            <b>Город:</b> {{ object.location }}<br>
+            <b>Температура:</b> {{ object.temperature }}<sup>o</sup><br>
+        </div>
+    </div>
+    <div>
+        <a class="text-body-secondary small" href="{% url 'weather:home_page' %}">Назад</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
