@@ -5,7 +5,7 @@ from weather.models import Weather
 
 class WeatherSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для модели Habits
+    Сериализатор для модели Weather
     """
     locations_count = serializers.SerializerMethodField()
 
